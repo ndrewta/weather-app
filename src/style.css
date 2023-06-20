@@ -1,4 +1,13 @@
 #content {
-  margin: 15% 25%;
+  margin: 25% 25%;
   border: solid 1px;
+}
+
+#weather-icon {
+  width: 100px;
+  height: auto;
+}
+
+li {
+  display: inline-block;
 }
