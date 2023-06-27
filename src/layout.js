@@ -17,7 +17,6 @@ export default function weatherPageLayout() {
   const forecastCanvas = document.getElementById("forecast-canvas");
   const forecastList = document.getElementById("forecast-list-div");
   let storedForecastData;
-  let intialForecastChart = true;
 
   function updateLocation(locationData) {
     // Update Location
@@ -122,8 +121,8 @@ export default function weatherPageLayout() {
     }
   }
 
-  function createChart(data) {
-    // Create forecast chart
+  function updateChart(data) {
+    // Update forecast chart
     const obj = { canvas: forecastCanvas, time: data };
     ps.publish("update-chart", obj);
   }
@@ -131,16 +130,7 @@ export default function weatherPageLayout() {
   function storeForecastData(forecastData) {
     // Store forecast data
     storedForecastData = forecastData;
-    if (intialForecastChart) {
-      createChart(storedForecastData[0].hour);
-      intialForecastChart = false;
-    }
-  }
-
-  function updateChart(data) {
-    // Update forecast chart
-    const obj = { canvas: forecastCanvas, time: data };
-    ps.publish("update-chart", obj);
+    updateChart(storedForecastData[0].hour);
   }
 
   function getForecastData(target) {
