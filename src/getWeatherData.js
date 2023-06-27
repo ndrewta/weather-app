@@ -1,13 +1,15 @@
 import ps from "./pubsub";
 
 export default function getWeatherData() {
-  const weatherKey = "f3b3f9de329746d2a0b91417230706";
+  const weatherKey = "389f0ff0bad1485095d94113232206";
 
   function publishData(data) {
     // Publish successful datga
-    ps.publish("update-country", `${data.location.country}`);
     ps.publish("update-temperature", `${data.current.temp_c}°C`);
-    ps.publish("update-location", data.location.name);
+    ps.publish(
+      "update-location",
+      `${data.location.name}, ${data.location.country}`
+    );
     ps.publish("update-wind-speed", `${data.current.wind_kph} km/h`);
     ps.publish("update-wind-direction", data.current.wind_dir);
     ps.publish("update-humidity", `${data.current.humidity}%`);
@@ -20,7 +22,6 @@ export default function getWeatherData() {
 
   function publishError() {
     // Publish error message
-    ps.publish("update-country", "INVALID LOCATION");
     ps.publish("update-location", "INVALID LOCATION");
     ps.publish("update-temperature", "ERROR");
     ps.publish("update-wind-speed", "ERROR");
@@ -53,6 +54,20 @@ export default function getWeatherData() {
     }
   }
 
+  async function getWeatherByIp() {
+    // Get weather by ip request
+    try {
+      const response = await fetch(
+        `https://api.weatherapi.com/v1/forecast.json?key=${weatherKey}&q=auto:ip&days=7`,
+        { mode: "cors" }
+      );
+      const weatherData = await response.json();
+      publishData(weatherData);
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
   function sortForecast(forecastData) {
     // Sort day, weather icon, high and low temps, hourly highs
     const array = [];
@@ -66,6 +81,7 @@ export default function getWeatherData() {
         day: new Date(dayData.date).toLocaleDateString("en-US", {
           weekday: "short",
         }),
+        hour: dayData.hour,
       };
       array.push(obj);
     }
@@ -110,4 +126,5 @@ export default function getWeatherData() {
   }
 
   ps.subscribe("get-weather", getWeather);
+  ps.subscribe("get-weather-ip", getWeatherByIp);
 }

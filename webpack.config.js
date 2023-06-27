@@ -8,6 +8,7 @@ module.exports = {
     pubsub: "./src/pubsub.js",
     getWeatherData: "./src/getWeatherData.js",
     layout: "./src/layout.js",
+    createChart: "./src/createChart.js",
   },
   devtool: "inline-source-map",
   plugins: [

@@ -4,8 +4,7 @@ export default function weatherPageLayout() {
   // Cache page elements
   const getWeatherBtn = document.getElementById("get-weather-btn");
   const input = document.querySelector("input");
-  const country = document.getElementById("country");
-  const city = document.getElementById("city");
+  const location = document.getElementById("location");
   const temperature = document.getElementById("temperature");
   const windSpeed = document.getElementById("wind-speed");
   const windDirection = document.getElementById("wind-direction");
@@ -15,19 +14,19 @@ export default function weatherPageLayout() {
   const weatherIcon = document.getElementById("weather-icon");
   const localTime = document.getElementById("local-time");
   const forecast = document.getElementById("forecast");
+  const forecastCanvas = document.getElementById("forecast-canvas");
+  const forecastList = document.getElementById("forecast-list-div");
+  let storedForecastData;
+  let intialForecastChart = true;
 
-  function updateCountry(countryData) {
-    country.textContent = `Country: ${countryData}`;
-  }
-
-  function updateCity(locationData) {
-    // Update location
-    city.textContent = `City: ${locationData}`;
+  function updateLocation(locationData) {
+    // Update Location
+    location.textContent = locationData;
   }
 
   function updateTemperature(temperatureData) {
     // Update temperature
-    temperature.textContent = `Temperature: ${temperatureData}`;
+    temperature.textContent = temperatureData;
   }
 
   function updateWindSpeed(windSpeedData) {
@@ -52,7 +51,7 @@ export default function weatherPageLayout() {
 
   function updateCondition(conditionData) {
     // Update condition
-    condition.textContent = `Condition: ${conditionData}`;
+    condition.textContent = conditionData;
   }
 
   function updateWeatherIcon(weatherIconData) {
@@ -62,31 +61,42 @@ export default function weatherPageLayout() {
 
   function updateLocalTime(localTimeData) {
     // Update local time
-    localTime.textContent = `Local time: ${localTimeData}`;
+    localTime.textContent = localTimeData;
   }
 
   function updateForecast(foreCastData) {
     // Update 7 day forecast
-    const liElems = forecast.getElementsByTagName("li");
+    const liElems = Array.from(forecast.getElementsByTagName("li"));
 
-    foreCastData.forEach((data, index) => {
-      // Get each list item by index then update each element
-      const dayElem = liElems[index].querySelector(".forecast-day");
-      const iconElem = liElems[index].querySelector(".forecast-icon");
-      const maxElem = liElems[index].querySelector(".forecast-max");
-      const minElem = liElems[index].querySelector(".forecast-min");
+    if (foreCastData === "ERROR") {
+      liElems.forEach((data, index) => {
+        // Get each list item by index then update each element
+        const dayElem = liElems[index].querySelector(".forecast-day");
+        const maxElem = liElems[index].querySelector(".forecast-max");
+        const minElem = liElems[index].querySelector(".forecast-min");
 
-      dayElem.textContent = data.day;
-      iconElem.src = data.icon;
-      maxElem.textContent = `${data.maxtemp}°C`;
-      minElem.textContent = `${data.mintemp}°C`;
-    });
+        dayElem.textContent = "---";
+        maxElem.textContent = `--°C`;
+        minElem.textContent = `--°C`;
+      });
+    } else {
+      foreCastData.forEach((data, index) => {
+        // Get each list item by index then update each element
+        const dayElem = liElems[index].querySelector(".forecast-day");
+        const iconElem = liElems[index].querySelector(".forecast-icon");
+        const maxElem = liElems[index].querySelector(".forecast-max");
+        const minElem = liElems[index].querySelector(".forecast-min");
+
+        dayElem.textContent = data.day;
+        iconElem.src = data.icon;
+        maxElem.textContent = `${data.maxtemp}°C`;
+        minElem.textContent = `${data.mintemp}°C`;
+      });
+    }
   }
 
   function getWeather() {
     let request = input.value;
-    country.textContent = "Country: Loading...";
-    city.textContent = "City: Loading...";
     temperature.textContent = "Current temperature: Loading...";
     windSpeed.textContent = "Wind speed: Loading...";
     windDirection.textContent = "Wind direction: Loading...";
@@ -94,12 +104,62 @@ export default function weatherPageLayout() {
     precipitation.textContent = "Precipitation: Loading...";
     condition.textContent = "Condition: Loading...";
     localTime.textContent = "Local time: Loading...";
-    setTimeout(ps.publish("get-weather", request), 5000);
+    ps.publish("get-weather", request);
   }
 
+  function getId(target) {
+    // Get id of target forecast index number
+    let id;
+
+    if (target.getAttribute("class") === "forecast-daily-info") {
+      id = target.dataset.id;
+      return id;
+    }
+    if (target.closest(".forecast-daily-info")) {
+      const x = target.closest(".forecast-daily-info");
+      id = x.dataset.id;
+      return id;
+    }
+  }
+
+  function createChart(data) {
+    // Create forecast chart
+    const obj = { canvas: forecastCanvas, time: data };
+    ps.publish("update-chart", obj);
+  }
+
+  function storeForecastData(forecastData) {
+    // Store forecast data
+    storedForecastData = forecastData;
+    if (intialForecastChart) {
+      createChart(storedForecastData[0].hour);
+      intialForecastChart = false;
+    }
+  }
+
+  function updateChart(data) {
+    // Update forecast chart
+    const obj = { canvas: forecastCanvas, time: data };
+    ps.publish("update-chart", obj);
+  }
+
+  function getForecastData(target) {
+    // Get hourly data
+    const id = getId(target);
+    if (id === undefined) {
+      return;
+    }
+    const data = storedForecastData[id].hour;
+
+    updateChart(data);
+  }
+
+  forecastList.addEventListener("click", (e) => {
+    getForecastData(e.target);
+  });
+  window.addEventListener("load", () => ps.publish("get-weather-ip"));
   getWeatherBtn.addEventListener("click", getWeather);
-  ps.subscribe("update-country", updateCountry);
-  ps.subscribe("update-location", updateCity);
+  ps.subscribe("update-location", updateLocation);
   ps.subscribe("update-temperature", updateTemperature);
   ps.subscribe("update-wind-speed", updateWindSpeed);
   ps.subscribe("update-wind-direction", updateWindDirection);
@@ -109,4 +169,5 @@ export default function weatherPageLayout() {
   ps.subscribe("update-weather-icon", updateWeatherIcon);
   ps.subscribe("update-local-time", updateLocalTime);
   ps.subscribe("update-forecast", updateForecast);
+  ps.subscribe("update-forecast", storeForecastData);
 }

@@ -4,65 +4,95 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weather App</title>
-  <script defer src="index.bundle.js"></script><script defer src="pubsub.bundle.js"></script><script defer src="getWeatherData.bundle.js"></script><script defer src="layout.bundle.js"></script></head>
+  <script defer src="index.bundle.js"></script><script defer src="pubsub.bundle.js"></script><script defer src="getWeatherData.bundle.js"></script><script defer src="layout.bundle.js"></script><script defer src="createChart.bundle.js"></script></head>
   <body>
     <div id="content">
-      <button id="get-weather-btn">Search</button>
-      <input type="text" />
-      <p id="country">Country:</p>
-      <p id="city">City:</p>
-      <p id="local-time">Local time:</p>
-      <p id="temperature">Current temperature:</p>
-      <p id="condition">Condition:</p>
-      <p id="precipitation">Precipitation:</p>
-      <p id="humidity">Humidity:</p>
-      <p id="wind-speed">Wind speed:</p>
-      <p id="wind-direction">Wind direction:</p>
-      <img id="weather-icon" />
-      <ol id="forecast">
-        <li>
-          <p class="forecast-day"></p>
-          <img class="forecast-icon" />
-          <p class="forecast-max"></p>
-          <p class="forecast-min"></p>
-        </li>
-        <li>
-          <p class="forecast-day"></p>
-          <img class="forecast-icon" />
-          <p class="forecast-max"></p>
-          <p class="forecast-min"></p>
-        </li>
-        <li>
-          <p class="forecast-day"></p>
-          <img class="forecast-icon" />
-          <p class="forecast-max"></p>
-          <p class="forecast-min"></p>
-        </li>
-        <li>
-          <p class="forecast-day"></p>
-          <img class="forecast-icon" />
-          <p class="forecast-max"></p>
-          <p class="forecast-min"></p>
-        </li>
-        <li>
-          <p class="forecast-day"></p>
-          <img class="forecast-icon" />
-          <p class="forecast-max"></p>
-          <p class="forecast-min"></p>
-        </li>
-        <li>
-          <p class="forecast-day"></p>
-          <img class="forecast-icon" />
-          <p class="forecast-max"></p>
-          <p class="forecast-min"></p>
-        </li>
-        <li>
-          <p class="forecast-day"></p>
-          <img class="forecast-icon" />
-          <p class="forecast-max"></p>
-          <p class="forecast-min"></p>
-        </li>
-      </ol>
+      <div id="top-left-div">
+        <div id="search-bar">
+          <button id="get-weather-btn">Search</button> <input type="text" />
+        </div>
+        <div id="location-div">
+          <p id="location"></p>
+          <p id="local-time"></p>
+        </div>
+        <div id="current-misc-div">
+          <p id="precipitation">Precipitation:</p>
+          <p id="humidity">Humidity:</p>
+          <p id="wind-speed">Wind speed:</p>
+          <p id="wind-direction">Wind direction:</p>
+        </div>
+      </div>
+
+      <div id="weather-div">
+        <div id="current-temp-div">
+          <p id="temperature"></p>
+          <img id="weather-icon" />
+        </div>
+        <p id="condition"></p>
+      </div>
+      <div id="forecast-div">
+        <canvas id="forecast-canvas"></canvas>
+        <div id="forecast-list-div">
+          <ol id="forecast">
+            <li class="forecast-daily-info" data-id="0">
+              <p class="forecast-day"></p>
+              <img class="forecast-icon" />
+              <div class="forecast-daily-temp">
+                <p class="forecast-max"></p>
+                <p class="forecast-min"></p>
+              </div>
+            </li>
+            <li class="forecast-daily-info" data-id="1">
+              <p class="forecast-day"></p>
+              <img class="forecast-icon" />
+              <div class="forecast-daily-temp">
+                <p class="forecast-max"></p>
+                <p class="forecast-min"></p>
+              </div>
+            </li>
+            <li class="forecast-daily-info" data-id="2">
+              <p class="forecast-day"></p>
+              <img class="forecast-icon" />
+              <div class="forecast-daily-temp">
+                <p class="forecast-max"></p>
+                <p class="forecast-min"></p>
+              </div>
+            </li>
+            <li class="forecast-daily-info" data-id="3">
+              <p class="forecast-day"></p>
+              <img class="forecast-icon" />
+              <div class="forecast-daily-temp">
+                <p class="forecast-max"></p>
+                <p class="forecast-min"></p>
+              </div>
+            </li>
+            <li class="forecast-daily-info" data-id="4">
+              <p class="forecast-day"></p>
+              <img class="forecast-icon" />
+              <div class="forecast-daily-temp">
+                <p class="forecast-max"></p>
+                <p class="forecast-min"></p>
+              </div>
+            </li>
+            <li class="forecast-daily-info" data-id="5">
+              <p class="forecast-day"></p>
+              <img class="forecast-icon" />
+              <div class="forecast-daily-temp">
+                <p class="forecast-max"></p>
+                <p class="forecast-min"></p>
+              </div>
+            </li>
+            <li class="forecast-daily-info" data-id="6">
+              <p class="forecast-day"></p>
+              <img class="forecast-icon" />
+              <div class="forecast-daily-temp">
+                <p class="forecast-max"></p>
+                <p class="forecast-min"></p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
     </div>
   </body>
 </html>

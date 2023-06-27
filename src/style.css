@@ -1,13 +1,132 @@
 #content {
-  margin: 25% 25%;
+  display: grid;
+  height: 80vh;
+  grid-template-areas: "top-left top-right" "bottom bottom";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 2fr;
   border: solid 1px;
 }
 
+#top-left-div {
+  grid-area: top-left;
+  border: solid orange 1px;
+  background: rgb(158, 222, 233);
+  padding-left: 15px;
+}
+
+#search-bar {
+  padding: 20px 5px;
+}
+
+#search-bar > button {
+  width: auto;
+  height: 30px;
+  font-size: 18px;
+  border-radius: 5px;
+  background-color: rgb(255, 255, 255);
+}
+
+#search-bar > input {
+  font-size: 20px;
+  width: 200px;
+  height: 22px;
+  border-radius: 5px;
+  border-color: rgb(217, 217, 238);
+}
+
+#location-div > p {
+  font-size: 28px;
+  margin: 5px;
+  padding: 0;
+}
+
+#weather-div {
+  grid-area: top-right;
+  display: grid;
+  justify-content: end;
+  grid-template-rows: 100px 100px;
+  border: solid red 1px;
+  background: pink;
+}
+
+#current-temp-div {
+  display: flex;
+  align-items: center;
+}
+
+#current-misc-div > p {
+  font-size: 18px;
+  padding: 0;
+  margin: 5px;
+}
+
+#condition {
+  margin: 0;
+  font-size: 35px;
+}
+
+#temperature {
+  font-size: 45px;
+  margin: 0;
+}
+
+#forecast-div {
+  grid-area: bottom;
+  display: grid;
+  grid-template-rows: 2fr 1fr;
+}
+
+#forecast-list-div {
+  border: solid rgb(206, 115, 198) 1px;
+  background: rgb(206, 115, 198);
+}
+
+#forecast {
+  padding: 25px 0 25px;
+  display: flex;
+  justify-content: space-around;
+}
+
+#forecast > li {
+  display: grid;
+  grid-template-rows: 30px 50px 50px;
+  text-align: center;
+  justify-content: center;
+  width: 150px;
+  height: auto;
+  border: 1px solid orange;
+  background: rgb(235, 169, 169);
+}
+
+.forecast-daily-temp {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 5px;
+  width: 125px;
+}
+
+.forecast-icon {
+  justify-self: center;
+}
+
+.forecast-max {
+  color: white;
+}
+
+.forecast-min {
+  color: rgb(112, 106, 106);
+}
+
 #weather-icon {
+  padding: 0;
   width: 100px;
   height: auto;
 }
 
 li {
   display: inline-block;
+}
+
+.toggle-forecast {
+  background: rgb(126, 117, 117);
 }
