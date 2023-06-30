@@ -1,16 +1,20 @@
+body {
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
 #content {
   display: grid;
-  height: 80vh;
-  grid-template-areas: "top-left top-right" "bottom bottom";
+  height: 100vh;
+  grid-template-areas: "top-left top-right" "middle middle" "bottom bottom";
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 2fr;
-  border: solid 1px;
+  background: rgb(243, 241, 241);
 }
 
 #top-left-div {
   grid-area: top-left;
-  border: solid orange 1px;
-  background: rgb(158, 222, 233);
   padding-left: 15px;
 }
 
@@ -45,8 +49,6 @@
   display: grid;
   justify-content: end;
   grid-template-rows: 100px 100px;
-  border: solid red 1px;
-  background: pink;
 }
 
 #current-temp-div {
@@ -71,18 +73,14 @@
 }
 
 #forecast-div {
+  margin: 0;
+  padding: 0;
   grid-area: bottom;
-  display: grid;
-  grid-template-rows: 2fr 1fr;
-}
-
-#forecast-list-div {
-  border: solid rgb(206, 115, 198) 1px;
-  background: rgb(206, 115, 198);
+  background: rgb(150, 150, 150);
 }
 
 #forecast {
-  padding: 25px 0 25px;
+  padding: 35px 0 35px;
   display: flex;
   justify-content: space-around;
 }
@@ -117,6 +115,27 @@
   color: rgb(112, 106, 106);
 }
 
+#canvas-div {
+  grid-area: middle;
+  width: 80%;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+#forecast-canvas {
+  height: 100%;
+  width: 100%;
+}
+
+#canvas-wrapper {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #weather-icon {
   padding: 0;
   width: 100px;
@@ -127,6 +146,7 @@ li {
   display: inline-block;
 }
 
-.toggle-forecast {
-  background: rgb(126, 117, 117);
+#forecast .toggle-forecast {
+  background: rgb(228, 184, 184);
+  border: 1px solid rgb(211, 224, 133);
 }

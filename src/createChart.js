@@ -4,11 +4,6 @@ import ps from "./pubsub";
 let currentChart;
 
 export default function createChart() {
-  function destroyChart(chart) {
-    // Destroy chart
-    chart.destroy();
-  }
-
   function filterData(data) {
     // Filter out temp and time data in 3 hour intervals
     let tempsArr = [];
@@ -26,22 +21,26 @@ export default function createChart() {
     return { tempsArr, timeArr };
   }
 
+  function updateChart(newData) {
+    const datasets = newData.datasets[0].data;
+    const { labels } = newData;
+    const { options } = newData;
+    currentChart.data.datasets[0].data = datasets;
+    currentChart.data.labels = labels;
+    currentChart.options = options;
+    currentChart.update();
+  }
+
   function newChart(obj) {
     const { canvas } = obj;
     const timeData = obj.time;
-    // Destroy previous chart if it exists
-    if (currentChart) {
-      destroyChart(currentChart);
-      currentChart = null;
-    }
 
     // Filter out data
     const filteredData = filterData(timeData);
 
     // Label data
-    const labels = filteredData.timeArr;
     const data = {
-      labels,
+      labels: filteredData.timeArr,
       datasets: [
         {
           label: "Highs",
@@ -51,15 +50,23 @@ export default function createChart() {
           tension: 0.1,
         },
       ],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      },
     };
 
     // Create chart
-    const chart = new Chart(canvas, {
-      type: "line",
-      data,
-    });
-    currentChart = chart;
-    ps.publish("chart-created", chart);
+    if (currentChart) {
+      updateChart(data);
+    } else {
+      currentChart = new Chart(canvas, {
+        type: "line",
+        data,
+      });
+    }
+
+    ps.publish("chart-created", currentChart);
   }
 
   ps.subscribe("update-chart", newChart);

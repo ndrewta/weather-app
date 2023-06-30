@@ -13,7 +13,7 @@ export default function weatherPageLayout() {
   const condition = document.getElementById("condition");
   const weatherIcon = document.getElementById("weather-icon");
   const localTime = document.getElementById("local-time");
-  const forecast = document.getElementById("forecast");
+  const forecastOL = document.getElementById("forecast");
   const forecastCanvas = document.getElementById("forecast-canvas");
   const forecastList = document.getElementById("forecast-list-div");
   let storedForecastData;
@@ -65,7 +65,7 @@ export default function weatherPageLayout() {
 
   function updateForecast(foreCastData) {
     // Update 7 day forecast
-    const liElems = Array.from(forecast.getElementsByTagName("li"));
+    const liElems = Array.from(forecastOL.getElementsByTagName("li"));
 
     if (foreCastData === "ERROR") {
       liElems.forEach((data, index) => {
@@ -115,8 +115,7 @@ export default function weatherPageLayout() {
       return id;
     }
     if (target.closest(".forecast-daily-info")) {
-      const x = target.closest(".forecast-daily-info");
-      id = x.dataset.id;
+      id = target.closest(".forecast-daily-info").dataset.id;
       return id;
     }
   }
@@ -133,6 +132,19 @@ export default function weatherPageLayout() {
     updateChart(storedForecastData[0].hour);
   }
 
+  function toggleForecast(target) {
+    // Remove class from all other divs
+    const liElems = Array.from(forecastOL.getElementsByTagName("li"));
+    liElems.forEach((elem) => elem.classList.remove("toggle-forecast"));
+
+    // Check target if parent div then toggle class
+    let parentDiv = target;
+    if (target.closest(".forecast-daily-info")) {
+      parentDiv = target.closest(".forecast-daily-info");
+    }
+    parentDiv.classList.toggle("toggle-forecast");
+  }
+
   function getForecastData(target) {
     // Get hourly data
     const id = getId(target);
@@ -141,7 +153,11 @@ export default function weatherPageLayout() {
     }
     const data = storedForecastData[id].hour;
 
+    // Create chart
     updateChart(data);
+
+    // Toggle class
+    toggleForecast(target);
   }
 
   forecastList.addEventListener("click", (e) => {
