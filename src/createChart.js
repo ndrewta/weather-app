@@ -1,6 +1,8 @@
 import Chart from "chart.js/auto";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import ps from "./pubsub";
 
+Chart.register(ChartDataLabels);
 let currentChart;
 
 export default function createChart() {
@@ -8,6 +10,7 @@ export default function createChart() {
     // Filter out temp and time data in 3 hour intervals
     let tempsArr = [];
     let timeArr = [];
+    let maxValue;
 
     for (let i = 0; i < data.length; i += 3) {
       tempsArr.push(data[i].temp_c);
@@ -18,13 +21,14 @@ export default function createChart() {
       });
       timeArr.push(time);
     }
-    return { tempsArr, timeArr };
+
+    maxValue = Math.max(...tempsArr);
+    return { tempsArr, timeArr, maxValue };
   }
 
-  function updateChart(newData) {
+  function updateChart(newData, options) {
     const datasets = newData.datasets[0].data;
     const { labels } = newData;
-    const { options } = newData;
     currentChart.data.datasets[0].data = datasets;
     currentChart.data.labels = labels;
     currentChart.options = options;
@@ -37,6 +41,7 @@ export default function createChart() {
 
     // Filter out data
     const filteredData = filterData(timeData);
+    const maxValue = filteredData.maxValue + 1;
 
     // Label data
     const data = {
@@ -45,24 +50,67 @@ export default function createChart() {
         {
           label: "Highs",
           data: filteredData.tempsArr,
-          fill: false,
+          fill: true,
           borderColor: "rgb(75, 192, 192)",
           tension: 0.1,
         },
       ],
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
+    };
+    const options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          grid: {
+            display: true,
+            drawOnChartArea: false,
+          },
+          ticks: {
+            font: {
+              size: 25,
+            },
+          },
+        },
+        y: {
+          display: false,
+          max: maxValue,
+        },
+      },
+      plugins: {
+        tooltip: {
+          enabled: false,
+        },
+        legend: {
+          display: false,
+        },
+        datalabels: {
+          anchor: "start",
+          align: "top",
+          font: {
+            size: 25,
+          },
+          labels: {
+            title: {
+              font: {
+                weight: "bold",
+              },
+            },
+            value: {
+              color: "green",
+            },
+          },
+        },
       },
     };
 
     // Create chart
     if (currentChart) {
-      updateChart(data);
+      updateChart(data, options);
     } else {
       currentChart = new Chart(canvas, {
         type: "line",
         data,
+        options,
       });
     }
 
